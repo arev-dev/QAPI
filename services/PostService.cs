@@ -41,9 +41,9 @@ public class PostService : IPostService
         return _postRepository.GetPostComments(id);
     }
 
-    public List<Post> GetUserPosts()
+    public List<UserPostsResponseModel> GetUserPosts(int id)
     {
-        return _postRepository.GetUserPosts();
+        return _postRepository.GetUserPosts(id);
     }
 
     public PostResponseModel UpdatePost(Post post)

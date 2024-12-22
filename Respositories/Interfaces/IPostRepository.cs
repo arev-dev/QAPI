@@ -5,7 +5,7 @@ public interface IPostRepository
 {
     Post GetPostById(int id);
     List<Post> GetAllPosts();
-    List<Post> GetUserPosts();
+    List<UserPostsResponseModel> GetUserPosts(int id);
     List<Comment> GetPostComments(int id);
     PostResponseModel ClosePost(int id);
     PostResponseModel CreatePost(Post post);
