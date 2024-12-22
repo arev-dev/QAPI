@@ -60,6 +60,9 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.Title)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+            entity.Property(e => e.IsClosed)
+                .HasMaxLength(1)
+                .IsUnicode(false);
 
             entity.HasOne(d => d.User).WithMany(p => p.Posts)
                 .HasForeignKey(d => d.UserId)
