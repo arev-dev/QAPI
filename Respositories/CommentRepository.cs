@@ -79,12 +79,73 @@ public class CommentRepository : ICommentRepository
 
     public CommentResponseModel DeleteComment(int id)
     {
-        throw new NotImplementedException();
+        try
+        {
+            using var connection = new SqlConnection(_connectionString);
+            connection.Open();
+            var command = new SqlCommand("SPDeleteComment", connection)
+            {
+                CommandType = CommandType.StoredProcedure
+            };
+            command.Parameters.AddWithValue("@Id", id);
+            var returnValue = new SqlParameter
+            {
+                ParameterName = "@ReturnValue",
+                SqlDbType = SqlDbType.Int,
+                Direction = ParameterDirection.ReturnValue
+            };
+            command.Parameters.Add(returnValue);
+            command.ExecuteNonQuery();
+
+            int returnCode = (int)returnValue.Value;
+            return new CommentResponseModel()
+            {
+                ResponseCode = returnCode,
+                Comment = null
+            };
+        }
+        catch(Exception e)
+        {
+            Console.WriteLine($"Error deleting comment: {e.Message}");
+            return new CommentResponseModel()
+            {
+                ResponseCode = -99,
+                Comment = null
+            };
+        }
     }
 
     public List<Comment> GetAllComments()
     {
-        throw new NotImplementedException();
+        try
+        {
+            using var connection = new SqlConnection(_connectionString);
+            connection.Open();
+            var command = new SqlCommand("SPGetAllComments", connection)
+            {
+                CommandType = CommandType.StoredProcedure
+            };
+
+            using var reader = command.ExecuteReader();
+            var comments = new List<Comment>();
+            while (reader.Read())
+            {
+                comments.Add(new Comment
+                {
+                    Id = (int)reader["Id"],
+                    UserId = (int)reader["UserId"],
+                    PostId = (int)reader["PostId"],
+                    Content = reader["Content"].ToString() ?? "",
+                    CreatedAt = (DateTime)reader["CreatedAt"]
+                });
+            }
+            return comments;
+        }
+        catch(Exception e)
+        {
+            Console.WriteLine($"Error: {e.Message}");
+            return new List<Comment>();
+        }
     }
 
     public Comment GetCommentById(int id)
@@ -122,6 +183,46 @@ public class CommentRepository : ICommentRepository
 
     public CommentResponseModel UpdateComment(Comment comment)
     {
-        throw new NotImplementedException();
+        try
+        {
+            using var connection = new SqlConnection(_connectionString);
+            connection.Open();
+            var command = new SqlCommand("SPUpdateComment", connection)
+            {
+                CommandType = CommandType.StoredProcedure
+            };
+            command.Parameters.AddWithValue("@Id", comment.Id);
+            command.Parameters.AddWithValue("@Content", comment.Content);
+            var returnValue = new SqlParameter
+            {
+                ParameterName = "@ReturnValue",
+                SqlDbType = SqlDbType.Int,
+                Direction = ParameterDirection.ReturnValue
+            };
+            command.Parameters.Add(returnValue);
+            command.ExecuteNonQuery();
+
+            int returnCode = (int)returnValue.Value;
+            Comment commentResponse = new Comment();
+            if(returnCode == 1)
+            {
+                commentResponse = GetCommentById(comment.Id);
+            }
+
+            return new CommentResponseModel()
+            {
+                ResponseCode = returnCode,
+                Comment = commentResponse
+            };
+        }
+        catch(Exception e)
+        {
+            Console.WriteLine($"Error updating comment: {e.Message}");
+            return new CommentResponseModel()
+            {
+                ResponseCode = -99,
+                Comment = null
+            };
+        }
     }
 }

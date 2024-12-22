@@ -27,6 +27,12 @@ namespace QAPI.Controllers
             return Ok(ResponseModel<Comment>.SuccessResponse(comment, "Comentario encontrado."));
         }
 
+        [HttpGet]
+        public ActionResult<List<Comment>> GetAllComments()
+        {
+            List<Comment> comments = _commentService.GetAllComments();
+            return Ok(ResponseModel<List<Comment>>.SuccessResponse(comments, "Comentarios encontrados."));
+        }
         [HttpPost]
         public ActionResult CreateComment([FromBody] Comment comment)
         {
@@ -45,6 +51,41 @@ namespace QAPI.Controllers
                 return (ActionResult)responses[responseModel.ResponseCode];
             }
             return Ok(ResponseModel<Comment>.SuccessResponse(responseModel.Comment, "Publicación creada."));
+        }
+
+        [HttpDelete("{id}")]
+        public ActionResult DeleteComment(int id)
+        {
+            var responseModel = _commentService.DeleteComment(id);
+            var responses = new Dictionary<int, Object>
+            {
+                { -1, BadRequest(ResponseModel<Object>.ErrorResponse("No se pudo eliminar el post. Id inválido.")) },
+                { -2, BadRequest(ResponseModel<Object>.ErrorResponse("No se pudo eliminar el post. No se encontró el post.")) },
+                { -99, BadRequest(ResponseModel<Object>.ErrorResponse("No se pudo eliminar el post. Error interno.")) }
+            };
+            if (responses.ContainsKey(responseModel.ResponseCode))
+            {
+                return (ActionResult)responses[responseModel.ResponseCode];
+            }
+            return Ok(ResponseModel<Object>.SuccessResponse("Comentario eliminado."));
+        }
+
+        [HttpPatch]
+        public ActionResult UpdateComment([FromBody] Comment comment)
+        {
+            var responseModel = _commentService.UpdateComment(comment);
+            var responses = new Dictionary<int, Object>
+            {
+                { -1, BadRequest(ResponseModel<Object>.ErrorResponse("No se pudo actualizar el post. Id inválido.")) },
+                { -2, BadRequest(ResponseModel<Object>.ErrorResponse("No se pudo actualizar el post. No se encontró el post.")) },
+                { -3, BadRequest(ResponseModel<Object>.ErrorResponse("No se pudo actualizar el post. Content inválido.")) },
+                { -99, BadRequest(ResponseModel<Object>.ErrorResponse("No se pudo actualizar el post. Error interno.")) }
+            };
+            if (responses.ContainsKey(responseModel.ResponseCode))
+            {
+                return (ActionResult)responses[responseModel.ResponseCode];
+            }
+            return Ok(ResponseModel<Comment>.SuccessResponse(responseModel.Comment, "Comentario actualizado."));
         }
     }
 }
