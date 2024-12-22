@@ -9,5 +9,5 @@ public interface IUserRepository
     UserResponseModel CreateUser(User user);
     UserResponseModel UpdateUser(User user);
     UserResponseModel DeleteUser(int id);
-    UserResponseModel Login(User user);
+    LoginResponseModel Login(User user);
 }

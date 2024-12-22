@@ -113,7 +113,7 @@ namespace QAPI.Controllers
             {
                 return (ActionResult)responses[responseModel.ResponseCode];
             }
-            return Ok(ResponseModel<User>.SuccessResponse(responseModel.User, "Credenciales válidas."));
+            return Ok(ResponseModel<string>.SuccessResponse(responseModel.Token, "Credenciales válidas."));
         }
     }
 }

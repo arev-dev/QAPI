@@ -3,6 +3,10 @@ using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using QAPI.Models;
 using QAPI.Models.DTO;
+using System.IdentityModel.Tokens.Jwt;
+using System.Text;
+using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
 
 namespace QAPI.Repositories;
 
@@ -226,7 +230,7 @@ public class UserRepository : IUserRepository
         }
     }
 
-    public UserResponseModel Login(User user)
+    public LoginResponseModel Login(User user)
     {
         try
         {
@@ -250,21 +254,25 @@ public class UserRepository : IUserRepository
             command.ExecuteNonQuery();
 
             int returnCode = (int)returnValue.Value;
-            //Retornar respuesta
-            return new UserResponseModel()
+            string token = "";
+            if (returnCode == 1)
             {
-                ResponseCode = returnCode, 
-                User = null
+                token = GenerateToken(GetUserByUsername(user.Username));
+            }
+            //Retornar respuesta
+            return new LoginResponseModel()
+            {
+                ResponseCode = returnCode,
+                Token = token
             };
 
         }
         catch (Exception e)
         {
             Console.WriteLine($"Error SQL: {e.Message}");
-            return new UserResponseModel()
+            return new LoginResponseModel()
             {
-                ResponseCode = -99,
-                User = null
+                ResponseCode = -99
             };
         }
     }
@@ -299,5 +307,27 @@ public class UserRepository : IUserRepository
             Console.WriteLine($"Error SQL: {e.Message}");
             return new User();
         }
+    }
+
+    private static string GenerateToken(User user)
+    {
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var key = Encoding.UTF8.GetBytes("6D9736B8C9A37D22F7E5BCFE62AB92DF");
+        var tokenDescriptor = new SecurityTokenDescriptor
+        {
+            Subject = new ClaimsIdentity(new Claim[]
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Name, user.Username)
+            }),
+            Expires = DateTime.UtcNow.AddHours(5),
+            SigningCredentials = new SigningCredentials(
+                new SymmetricSecurityKey(key),
+                SecurityAlgorithms.HmacSha256Signature)
+        };
+
+        var token = tokenHandler.CreateToken(tokenDescriptor);
+
+        return tokenHandler.WriteToken(token);
     }
 }

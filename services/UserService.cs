@@ -35,7 +35,7 @@ public class UserService : IUserService
         return _userRepository.GetUserByUsername(username);
     }
 
-    public UserResponseModel Login(User user)
+    public LoginResponseModel Login(User user)
     {
         return _userRepository.Login(user);
     }
