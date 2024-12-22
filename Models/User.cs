@@ -17,8 +17,10 @@ public partial class User
     public DateTime CreatedAt { get; set; }
 
     [BindNever]
+    [JsonIgnore]
     public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
 
     [BindNever]
+    [JsonIgnore]
     public virtual ICollection<Post> Posts { get; set; } = new List<Post>();
 }
