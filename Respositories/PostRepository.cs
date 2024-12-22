@@ -55,7 +55,6 @@ public class PostRepository : IPostRepository
             int newPostId = (int)outputParam.Value;
             int returnCode = (int)returnValue.Value;
             Post postResponse = new Post();
-
             if(newPostId > 0)
             {
                 postResponse = GetPostById(newPostId);

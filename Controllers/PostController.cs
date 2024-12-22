@@ -36,6 +36,7 @@ namespace QAPI.Controllers
                 { -1, BadRequest(ResponseModel<Object>.ErrorResponse("No se pudo crear el post. Title inválido.")) },
                 { -2, BadRequest(ResponseModel<Object>.ErrorResponse("No se pudo crear el post. Content inválida.")) },
                 { -3, BadRequest(ResponseModel<Object>.ErrorResponse("No se pudo crear el post. UserId invalido.")) },
+                { -4, BadRequest(ResponseModel<Object>.ErrorResponse("No se pudo crear el post. El usuario con ese UserId no existe.")) },
                 { -99, BadRequest(ResponseModel<Object>.ErrorResponse("No se pudo crear el post. Error interno.")) }
             };
             if (responses.ContainsKey(responseModel.ResponseCode))
