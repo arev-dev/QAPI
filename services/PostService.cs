@@ -36,7 +36,7 @@ public class PostService : IPostService
         return _postRepository.GetPostById(id);
     }
 
-    public List<Comment> GetPostComments(int id)
+    public List<UserCommentsPostResponseModel> GetPostComments(int id)
     {
         return _postRepository.GetPostComments(id);
     }

@@ -207,7 +207,7 @@ public class PostRepository : IPostRepository
         return new Post();
     }
 
-    public List<Comment> GetPostComments(int id)
+    public List<UserCommentsPostResponseModel> GetPostComments(int id)
     {
         try
         {
@@ -219,15 +219,16 @@ public class PostRepository : IPostRepository
             };
             command.Parameters.AddWithValue("@Id", id);
             using var reader = command.ExecuteReader();
-            var comments = new List<Comment>();
+            var comments = new List<UserCommentsPostResponseModel>();
             while (reader.Read())
             {
-                comments.Add(new Comment
+                comments.Add(new UserCommentsPostResponseModel
                 {
-                    Id = (int)reader["Id"],
+                    CommentId = (int)reader["CommentId"],
                     PostId = (int)reader["PostId"],
                     UserId = (int)reader["UserId"],
                     Content = reader["Content"].ToString() ?? "",
+                    Username = reader["Username"].ToString()?? "",
                     CreatedAt = (DateTime)reader["CreatedAt"]
                 });
             }
@@ -236,7 +237,7 @@ public class PostRepository : IPostRepository
         catch(Exception e)
         {
             Console.WriteLine(e.Message);
-            return new List<Comment>();
+            return new List<UserCommentsPostResponseModel>();
         }
     }
 

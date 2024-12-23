@@ -99,14 +99,14 @@ namespace QAPI.Controllers
         }
 
         [HttpGet("comments/{id}")]
-        public ActionResult<List<Comment>> GetCommentsByPostId(int id)
+        public ActionResult<List<UserCommentsPostResponseModel>> GetCommentsByPostId(int id)
         {
-            List<Comment> comments = _postService.GetPostComments(id);
+            List<UserCommentsPostResponseModel> comments = _postService.GetPostComments(id);
             if (comments.Count == 0)
             {
-                return NotFound(ResponseModel<List<Comment>>.ErrorResponse("No se encontraron comentarios para esta publicación."));
+                return NotFound(ResponseModel<List<UserCommentsPostResponseModel>>.ErrorResponse("No se encontraron comentarios para esta publicación."));
             }
-            return Ok(ResponseModel<List<Comment>>.SuccessResponse(comments, "Comentarios encontrados."));
+            return Ok(ResponseModel<List<UserCommentsPostResponseModel>>.SuccessResponse(comments, "Comentarios encontrados."));
         }
 
         [HttpPost("close/{id}")]
