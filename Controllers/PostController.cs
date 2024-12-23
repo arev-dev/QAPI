@@ -80,7 +80,7 @@ namespace QAPI.Controllers
             return Ok(ResponseModel<Post>.SuccessResponse(null, "Publicación eliminada."));
         }
 
-        [HttpPatch]
+        [HttpPut]
         public ActionResult UpdatePost([FromBody] Post post)
         {
             var responseModel = _postService.UpdatePost(post);
