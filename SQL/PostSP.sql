@@ -140,13 +140,23 @@ GO
 CREATE PROCEDURE SPGetPostComments
 	@Id INT
 AS
-	IF NOT EXISTS(SELECT * FROM Posts WHERE Id = @ID)
+	IF NOT EXISTS(SELECT * FROM Posts WHERE Id = @Id)
 	BEGIN
 		RETURN -1;
 	END
 
 	BEGIN TRY
-		SELECT * FROM Comments WHERE PostId = @Id
+		SELECT 
+		C.Id as CommentId, 
+		C.PostId as PostId, 
+		C.Content as Content, 
+		U.Id as UserId, 
+		U.Username as Username, 
+		C.CreatedAt 
+		FROM Comments as C
+		INNER JOIN Users as U ON U.Id = C.UserId 
+		WHERE C.PostId = @Id
+		ORDER BY C.CreatedAt DESC
 
 		RETURN 1;
 	END TRY
