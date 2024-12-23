@@ -30,14 +30,13 @@ BEGIN
         VALUES (@Username, @Password);
 
         -- Obtener el ID del nuevo usuario
-        SET @NewUserId = SCOPE_IDENTITY(); -- SCOPE_IDENTITY() obtiene el último ID insertado en la sesión actual
+        SET @NewUserId = SCOPE_IDENTITY();
 
         RETURN 1; -- Código de éxito
     END TRY
     BEGIN CATCH
-        -- Manejar errores inesperados
-        SET @NewUserId = 0; -- Código de error genérico
-        RETURN -99; -- Salir del procedimiento
+        SET @NewUserId = 0; 
+        RETURN -99;
     END CATCH
 END;
 GO
@@ -139,7 +138,6 @@ BEGIN
 			RETURN 1;
 		END TRY
 		BEGIN CATCH
-			-- Manejar errores inesperados
 
 			RETURN -99;
 		END CATCH
